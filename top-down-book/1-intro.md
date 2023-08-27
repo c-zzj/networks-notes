@@ -255,3 +255,43 @@ bits* within the frame from one node to the next. The protocols in this layer ar
 ### 1.5.2 Encapsulation
 Each layer adds its layer specific header to the packet of the layer above when sending, and strips of the header added by the layer below when receiving.
 
+## Networks Under Attack
+**Malware** sent from attacker can do things including deleting the host's files and installing spyware that collects host's private information and sends back to the attacker. 
+
+**Botnet** - group of compromised devices that the attacker controls and leverages for spam email distribution or distributed denial-of-service attacks, etc.
+
+Much of the malware out there today is **self-replicating**: once it infects one host, 
+from that host it seeks entry into other hosts over the Internet, and from the newly 
+infected hosts, it seeks entry into yet more hosts. In this manner, self-replicating malware can spread exponentially fast.
+
+A broad class of security threats are known as **denial-of-service (DoS) **
+attacks. A DoS attack renders a network, host, or other piece 
+of infrastructure unusable by legitimate users. Three categories of DoS:
+- *Vulnerability attack*. This involves sending a few well-crafted messages to a 
+vulnerable application or operating system running on a targeted host. If the right 
+sequence of packets is sent to a vulnerable application or operating system, the 
+service can stop or, worse, the host can crash.
+- *Bandwidth flooding*. The attacker sends a deluge of packets to the targeted 
+host—so many packets that the target’s access link becomes clogged, preventing 
+legitimate packets from reaching the server.
+- *Connection flooding*. The attacker establishes a large number of half-open or 
+fully open TCP connections at the 
+target host. The host can become so bogged down with these bogus connections 
+that it stops accepting legitimate connections
+
+In a *distributed DoS (DDoS)* attack, the attacker controls multiple sources and has each source blast traffic at the target. DDos attacks are much harder to detect and defend against than a DoS attack from a 
+single host.
+
+A passive receiver that records a copy of 
+every packet that flies by is called a **packet sniffer**.
+
+The ability to inject packets into the 
+Internet with a false source address is known as **IP spoofing**, and is one of many 
+ways in which one user can masquerade as another user.
+
+## 1.7 History of Computer Networking and the Internet
+Skipped.
+
+
+## Companion Website
+https://media.pearsoncmg.com/ph/esm/ecs_kurose_compnetwork_8/cw/
