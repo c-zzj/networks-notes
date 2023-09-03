@@ -1077,3 +1077,114 @@ have each of its clusters periodically send probes (for example, ping messages o
 DNS queries) to all of the LDNSs around the world. One drawback of this approach 
 is that many LDNSs are configured to not respond to such probes.
 
+### 2.6.4 Case Studies: Netflix and YouTube
+Skipped.
+
+## 2.7 Socket Programming: Creating Network Applications
+There are two types of network applications. One type is an implementation 
+whose operation is specified in a protocol standard, such as an RFC or some other 
+standards document; such an application is sometimes referred to as “open,” since 
+the rules specifying its operation are known to all.
+
+The other type of network application is a proprietary network application. In 
+this case, the client and server programs employ an application-layer protocol that has 
+not been openly published in an RFC or elsewhere.
+
+When a client or server program implements a protocol defined by an RFC, it should use the well-known port number associated with the 
+protocol; conversely, when developing a proprietary application, the developer must 
+be careful to avoid using such well-known port numbers.
+
+### 2.7.1 Socket Programming with UDP
+When a socket is created, 
+an identifier, called a **port number**, is assigned to it.
+
+The sending process attaches to the packet a destination address, which consists of the destination host’s IP address and the destination socket’s port number.
+
+Moreover, the sender’s source address—consisting of the IP address of the source host and the port number of the source socket—are also 
+attached to the packet. However, attaching the source address to the packet is typically not done by the UDP application code; instead it is automatically done by the 
+underlying operating system.
+
+A simple program client-server application:
+```
+1. The client reads a line of characters (data) from its keyboard and sends the data 
+to the server.
+1. The server receives the data and converts the characters to uppercase.
+2. The server sends the modified data to the client.
+3. The client receives the modified data and displays the line on its screen.
+```
+
+#### UDPClient.py
+```
+from socket import *
+serverName = 'hostname'
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_DGRAM)
+message = input('Input lowercase sentence:')
+clientSocket.sendto(message.encode(),(serverName, serverPort))
+modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
+print(modifiedMessage.decode())
+clientSocket.close()
+```
+
+#### UDPServer.py
+```
+from socket import *
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_DGRAM)
+serverSocket.bind(('', serverPort))
+print(”The server is ready to receive”)
+while True:
+ message, clientAddress = serverSocket.recvfrom(2048)
+ modifiedMessage = message.decode().upper()
+ serverSocket.sendto(modifiedMessage.encode(), 
+clientAddress)
+```
+
+### 2.7.2 Socket Programming with TCP
+Before the client and server can start to send data to each other, they first need to handshake and 
+establish a TCP connection. One end of the TCP connection is attached to the client 
+socket and the other end is attached to a server socket. When creating the TCP connection, we associate with it the client socket address (IP address and port number) 
+and the server socket address (IP address and port number). With the TCP connection established, when one side wants to send data to the other side, it just drops the data into the TCP connection via its socket.
+
+The server program 
+must have a special socket that welcomes some 
+initial contact from a client process running on an arbitrary host.
+
+When the 
+client creates its TCP socket, it specifies the address of the welcoming socket in the 
+server, namely, the IP address of the server host and the port number of the socket. 
+After creating its socket, the client initiates a three-way handshake and establishes a 
+TCP connection with the server. The three-way handshake, which takes place within 
+the transport layer, is completely invisible to the client and server programs.
+
+During the three-way handshake, the server creates a new socket that is dedicated to that particular client.
+
+#### TCPClient.py
+```
+from socket import *
+serverName = 'servername'
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((serverName,serverPort))
+sentence = input('Input lowercase sentence:')
+clientSocket.send(sentence.encode())
+modifiedSentence = clientSocket.recv(1024)
+print('From Server: ', modifiedSentence.decode())
+clientSocket.close()
+```
+
+#### TCPServer.py
+```
+from socket import *
+serverPort = 12000
+serverSocket = socket(AF_INET,SOCK_STREAM)
+serverSocket.bind(('',serverPort))
+serverSocket.listen(1)
+print('The server is ready to receive')
+while True:
+    connectionSocket, addr = serverSocket.accept()
+    sentence = connectionSocket.recv(1024).decode()
+    capitalizedSentence = sentence.upper()
+    connectionSocket.send(capitalizedSentence.encode())
+    connectionSocket.close()
+```
